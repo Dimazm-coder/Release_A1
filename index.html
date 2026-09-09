@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>БУХЛОЧАТ</title>
+    <style>
+        /* Базовые стили */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #ffffff;
+            background-image: url('bg.jpg'); 
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #1a1a1a;
+        }
+
+        /* Общий полупрозрачный слой */
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.55);
+            min-height: 100vh;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Шапка с меню */
+        header {
+            position: fixed;
+            top: 20px;
+            width: 90%;
+            max-width: 1100px;
+            z-index: 1000;
+        }
+        nav {
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px 30px;
+        }
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        nav ul li a:hover {
+            color: #ff9f43;
+        }
+
+        /* Секции */
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 120px;
+            text-align: center;
+        }
+        section {
+            padding: 60px 20px;
+            margin-bottom: 40px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Главный экран */
+        h1 {
+            font-size: 4.5rem;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin: 80px 0 20px 0;
+            text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Стили Таймера */
+        .timer-box {
+            background: rgba(255, 159, 67, 0.15);
+            border: 2px solid #ff9f43;
+            padding: 20px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .timer-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            font-family: monospace;
+            color: #ff9f43;
+            text-shadow: 0 0 10px rgba(255, 159, 67, 0.3);
+        }
+
+        /* Стили списков и карточек */
+        h2 {
+            color: #ff9f43;
+            font-size: 2rem;
+            margin-top: 0;
+            text-transform: uppercase;
+            border-bottom: 2px solid rgba(255, 159, 67, 0.3);
+            padding-bottom: 10px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+            border-left: 4px solid #ff9f43;
+        }
+        .card h3 {
+            margin: 0 0 10px 0;
+            color: #ffffff;
+        }
+        .card p {
+            margin: 5px 0;
+            color: #cccccc;
+            font-size: 0.95rem;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+            h1 { font-size: 2.8rem; }
+            .timer-display { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay">
+        <!-- Шапка с меню -->
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="#main">Главное</a></li>
+                    <li><a href="#meetings">Встречи</a></li>
+                    <li><a href="#contacts">Контакты</a></li>
+                    <li><a href="#birthdays">Дни Рождения</a></li>
+                    <li><a href="#neman">До Нёмана</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="container">
+            <!-- Блок Главное -->
+            <section id="main" style="background: transparent; box-shadow: none; border: none;">
+                <h1>БУХЛОЧАТ</h1>
+                <p style="font-size: 1.3rem; text-shadow: 1px 1px 5px #000;">Официальный хаб душевных встреч, выездов на природу и хорошего настроения.</p>
+            </section>
+
+            <!-- Блок Таймера -->
+            <section id="neman">
+                <h2>До ежегодного выезда на Нёман осталось</h2>
+                <div class="timer-box">
+                    <div class="timer-display" id="countdown">00д 00ч 00м 00с</div>
+                </div>
+            </section>
+
+            <!-- Блок Встречи -->
+            <section id="meetings">
+                <h2>Ближайшие Встречи</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Пятничный сбор</h3>
+                        <p><strong>Когда:</strong> Каждую пятницу в 19:00</p>
+                        <p><strong>Где:</strong> Наше стандартное место / беседки</p>
+                    </div>
+                    <div class="card">
+                        <h3>Глобальный выезд</h3>
+                        <p><strong>Когда:</strong> Ежегодно 17 июля</p>
+                        <p><strong>Что брать:</strong> Лодки, палатки, казаны, хорошее настроение</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Блок Контакты -->
+            <section id="contacts">
+                <h2>Контакты и Линки</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Наш Telegram Чат</h3>
+                        <p>Ссылка на основную флудилку для координации.</p>
+                        <p><a href="#" style="color: #ff9f43;">@buhlochat_main</a></p>
+                    </div>
+                    <div class="card">
+                        <h3>Ответственные за сбор</h3>
+                        <p>Админ по мясу: Серёга</p>
+                        <p>Главный по логистике: Андрей</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Блок Дни Рождения -->
+            <section id="birthdays">
+                <h2>Дни Рождения</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Сентябрь</h3>
+                        <p>🎉 12.09 — Александр</p>
+                        <p>🎉 25.09 — Марина</p>
+                    </div>
+                    <div class="card">
+                        <h3>Октябрь</h3>
+                        <p>🎉 05.10 — Дмитрий</p>
+                        <p>🎉 18.10 — Светлана</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function getNextNemanDate() {
+            const now = new Date();
+            let currentYear = now.getFullYear();
+            
+            // Создаем дату 17 июля текущего года (в JS месяцы идут от 0 до 11, поэтому июль — это 6)
+            let targetDate = new Date(currentYear, 6, 17, 0, 0, 0);
+            
+            // Если 17 июля в этом году уже прошло, переключаем на следующий год
+            if (now.getTime() > targetDate.getTime()) {
+                targetDate = new Date(currentYear + 1, 6, 17, 0, 0, 0);
+            }
+            
+            return targetDate.getTime();
+        }
+
+        function updateTimer() {
+            const countdownDate = getNextNemanDate();
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const d = days < 10 ? '0' + days : days;
+            const h = hours < 10 ? '0' + hours : hours;
+            const m = minutes < 10 ? '0' + minutes : minutes;
+            const s = seconds < 10 ? '0' + seconds : seconds;
+
+            document.getElementById("countdown").innerHTML = `${d}д ${h}ч ${m}м ${s}с`;
+
+            // Если на календаре именно 17 июля
+            const today = new Date();
+            if (today.getMonth() === 6 && today.getDate() === 17) {
+                document.getElementById("countdown").innerHTML = "МЫ НА НЁМАНЕ! 🍻🏕️";
+            }
+        }
+
+        const intervalId = setInterval(updateTimer, 1000);
+        updateTimer();
+    </script>
+</body>
+</html>
