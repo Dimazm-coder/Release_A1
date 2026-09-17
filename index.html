@@ -3,287 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>БУХЛОЧАТ</title>
+    <title>Наш Саня всем Саня Саня</title>
     <style>
-        /* Базовые стили */
-        html {
-            scroll-behavior: smooth;
-        }
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            color: #ffffff;
-            background-image: url('bg.jpg'); 
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-color: #1a1a1a;
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Permanent+Marker&family=Roboto+Condensed:ital,wght@0,400;0,700;1,400&display=swap');
+
+        :root {
+            --fc-yellow: #ffde17;
+            --fc-red: #e62222;
+            --fc-dark: #121614;
+            --fc-gray: #2d3330;
+            --fc-green: #385e38;
+            --fc-mud: #5a4d41;
         }
 
-        /* Общий полупрозрачный слой */
-        .overlay {
-            background-color: rgba(0, 0, 0, 0.55);
-            min-height: 100vh;
-            width: 100%;
+        * {
             box-sizing: border-box;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Шапка с меню */
-        header {
-            position: fixed;
-            top: 20px;
-            width: 90%;
-            max-width: 1100px;
-            z-index: 1000;
-        }
-        nav {
-            background-color: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 15px 30px;
-        }
-        nav ul {
-            list-style: none;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        nav ul li a {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-        nav ul li a:hover {
-            color: #ff9f43;
         }
 
-        /* Секции */
-        .container {
-            width: 100%;
-            max-width: 900px;
-            margin-top: 120px;
-            text-align: center;
-        }
-        section {
-            padding: 60px 20px;
-            margin-bottom: 40px;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Главный экран */
-        h1 {
-            font-size: 4.5rem;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            margin: 80px 0 20px 0;
-            text-shadow: 3px 3px 15px rgba(0, 0, 0, 0.8);
-        }
-
-        /* Стили Таймера */
-        .timer-box {
-            background: rgba(255, 159, 67, 0.15);
-            border: 2px solid #ff9f43;
+        body {
+            background-color: var(--fc-dark);
+            color: #f5f5f5;
+            font-family: 'Roboto Condensed', sans-serif;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(56, 94, 56, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(90, 77, 65, 0.2) 0%, transparent 50%);
             padding: 20px;
-            border-radius: 12px;
-            display: inline-block;
-            margin-top: 20px;
-        }
-        .timer-display {
-            font-size: 2.5rem;
-            font-weight: bold;
-            font-family: monospace;
-            color: #ff9f43;
-            text-shadow: 0 0 10px rgba(255, 159, 67, 0.3);
+            overflow-x: hidden;
         }
 
-        /* Стили списков и карточек */
-        h2 {
-            color: #ff9f43;
-            font-size: 2rem;
-            margin-top: 0;
-            text-transform: uppercase;
-            border-bottom: 2px solid rgba(255, 159, 67, 0.3);
-            padding-bottom: 10px;
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 4px solid var(--fc-gray);
+            background: rgba(18, 22, 20, 0.85);
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
         }
+
+        /* FarCry 6 Style Spray/Stencil Header */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+            border-bottom: 3px dashed var(--fc-red);
+            padding-bottom: 30px;
+        }
+
+        header::before {
+            content: 'YARA AGRO-REVOLUTION';
+            position: absolute;
+            top: -10px;
+            left: 5px;
+            font-size: 12px;
+            background: var(--fc-red);
+            color: #fff;
+            padding: 2px 6px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transform: rotate(-1deg);
+        }
+
+        h1 {
+            font-family: 'Permanent Marker', 'Oswald', sans-serif;
+            font-size: 3.5rem;
+            color: var(--fc-yellow);
+            text-transform: uppercase;
+            line-height: 1.1;
+            text-shadow: 3px 3px 0px var(--fc-red), -1px -1px 0px #000;
+            letter-spacing: 1px;
+            transform: rotate(-1.5deg);
+            margin-top: 15px;
+        }
+
+        .tagline {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+            color: #fff;
+            background: var(--fc-green);
+            display: inline-block;
+            padding: 5px 15px;
+            margin-top: 15px;
+            text-transform: uppercase;
+            transform: rotate(1deg);
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        /* Navigation / Grid Layout */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 8px;
-            text-align: left;
-            border-left: 4px solid #ff9f43;
-        }
-        .card h3 {
-            margin: 0 0 10px 0;
-            color: #ffffff;
-        }
-        .card p {
-            margin: 5px 0;
-            color: #cccccc;
-            font-size: 0.95rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
         }
 
-        /* Адаптивность */
         @media (max-width: 768px) {
-            nav ul {
-                flex-direction: column;
-                gap: 10px;
+            .grid {
+                grid-template-columns: 1fr;
             }
-            h1 { font-size: 2.8rem; }
-            .timer-display { font-size: 1.8rem; }
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        .card {
+            background: var(--fc-gray);
+            border-left: 8px solid var(--fc-yellow);
+            padding: 20px;
+            position: relative;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.01);
+        }
+
+        .card.priority-red {
+            border-left-color: var(--fc-red);
+        }
+
+        .card.priority-green {
+            border-left-color: var(--fc-green);
+        }
+
+        h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* Specific section icons/markers disguised as stencil fonts */
+        h2::before {
+            content: '// ';
+            color: var(--fc-yellow);
+        }
+
+        .card.priority-red h2::before {
+            content: '★ ';
+            color: var(--fc-red);
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #dcdcdc;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.05);
+            position: relative;
+            padding-left: 20px;
+        }
+
+        li::before {
+            content: '➢';
+            position: absolute;
+            left: 0;
+            color: var(--fc-yellow);
+        }
+
+        /* Unique Garden & FarCry 6 UI Blends */
+        .status-badge {
+            display: inline-block;
+            background: var(--fc-red);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            font-family: 'Oswald', sans-serif;
+        }
+
+        .status-badge.ready {
+            background: var(--fc-green);
+        }
+
+        .intel-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid var(--fc-gray);
+            font-size: 0.9rem;
+            color: #777;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <div class="overlay">
-        <!-- Шапка с меню -->
+    <div class="container">
         <header>
-            <nav>
-                <ul>
-                    <li><a href="#main">Главное</a></li>
-                    <li><a href="#meetings">Встречи</a></li>
-                    <li><a href="#contacts">Контакты</a></li>
-                    <li><a href="#birthdays">Дни Рождения</a></li>
-                    <li><a href="#neman">До Нёмана</a></li>
-                </ul>
-            </nav>
+            <h1>Наш Саня всем Саня Саня</h1>
+            <div class="tagline">Огородное Сопротивление • Libertad de Саня</div>
         </header>
 
-        <main class="container">
-            <!-- Блок Главное -->
-            <section id="main" style="background: transparent; box-shadow: none; border: none;">
-                <h1>БУХЛОЧАТ</h1>
-                <p style="font-size: 1.3rem; text-shadow: 1px 1px 5px #000;">Официальный хаб душевных встреч, выездов на природу и хорошего настроения.</p>
-            </section>
-
-            <!-- Блок Таймера -->
-            <section id="neman">
-                <h2>До ежегодного выезда на Нёман осталось</h2>
-                <div class="timer-box">
-                    <div class="timer-display" id="countdown">00д 00ч 00м 00с</div>
+        <div class="grid">
+            
+            <!-- ДЕНЬ РОЖДЕНИЯ -->
+            <div class="card priority-red">
+                <h2>Главное Событие: День Рождения</h2>
+                <div class="status-badge">Секретные данные Революции</div>
+                <p><strong>Дата Х:</strong> Засекречено, но празднуется с размахом, превосходящим перевороты в Яре.</p>
+                <p>Каждый год в этот день мобилизуются все стратегические запасы домашних наливок, маринованных огурчиков и лучшего шашлыка.</p>
+                <div class="intel-box">
+                    Цель: Поздравить Саняру так, чтобы эхо праздника долетело до Антона Кастильо.
                 </div>
-            </section>
+            </div>
 
-            <!-- Блок Встречи -->
-            <section id="meetings">
-                <h2>Ближайшие Встречи</h2>
-                <div class="grid">
-                    <div class="card">
-                        <h3>Пятничный сбор</h3>
-                        <p><strong>Когда:</strong> Каждую пятницу в 19:00</p>
-                        <p><strong>Где:</strong> Наше стандартное место / беседки</p>
-                    </div>
-                    <div class="card">
-                        <h3>Глобальный выезд</h3>
-                        <p><strong>Когда:</strong> Ежегодно 17 июля</p>
-                        <p><strong>Что брать:</strong> Лодки, палатки, казаны, хорошее настроение</p>
-                    </div>
+            <!-- УБОРОЧНАЯ КАМПАНИЯ НА ОГОРОДЕ -->
+            <div class="card priority-red">
+                <h2>Операция «Уборочная Кампания»</h2>
+                <div class="status-badge ready">Фаза: Активный Сбор Урожая</div>
+                <p>Огород Сани — это не просто грядки, это главный арсенал тактического продовольствия Сопротивления.</p>
+                <ul>
+                    <li><strong>Картофельный фронт:</strong> Зачистка территории от колорадских оккупантов, штурм кустов лопатами.</li>
+                    <li><strong>Томатный сектор:</strong> Сбор спелых калибров, консервация в банки «особого назначения».</li>
+                    <li><strong>Кабачковая угроза:</strong> Ликвидация кабачков гигантских размеров путем раздачи соседям.</li>
+                </ul>
+                <div class="intel-box">
+                    Приказ командира: Ни один огурец не должен остаться не засоленным!
                 </div>
-            </section>
+            </div>
 
-            <!-- Блок Контакты -->
-            <section id="contacts">
-                <h2>Контакты и Линки</h2>
-                <div class="grid">
-                    <div class="card">
-                        <h3>Наш Telegram Чат</h3>
-                        <p>Ссылка на основную флудилку для координации.</p>
-                        <p><a href="#" style="color: #ff9f43;">@buhlochat_main</a></p>
-                    </div>
-                    <div class="card">
-                        <h3>Ответственные за сбор</h3>
-                        <p>Админ по мясу: Серёга</p>
-                        <p>Главный по логистике: Андрей</p>
-                    </div>
-                </div>
-            </section>
+            <!-- СОБЫТИЯ -->
+            <div class="card">
+                <h2>Хроника Событий (Лента Интел)</h2>
+                <p>Ключевые вехи и боевые вылазки нашего Сани:</p>
+                <ul>
+                    <li><strong>Весенний прорыв:</strong> Генеральная вспашка земли, закупка элитных семян на черном рынке.</li>
+                    <li><strong>Шашлычный ультиматум:</strong> Каждые выходные — победа над голодом и дегустация крафтовых солений.</li>
+                    <li><strong>Пятничная тактическая разведка:</strong> Встречи в гараже для обсуждения планов глобального благоустройства.</li>
+                </ul>
+            </div>
 
-            <!-- Блок Дни Рождения -->
-            <section id="birthdays">
-                <h2>Дни Рождения</h2>
-                <div class="grid">
-                    <div class="card">
-                        <h3>Сентябрь</h3>
-                        <p>🎉 12.09 — Александр</p>
-                        <p>🎉 25.09 — Марина</p>
-                    </div>
-                    <div class="card">
-                        <h3>Октябрь</h3>
-                        <p>🎉 05.10 — Дмитрий</p>
-                        <p>🎉 18.10 — Светлана</p>
-                    </div>
+            <!-- СЕМЬЯ И ДЕТИ -->
+            <div class="card priority-green">
+                <h2>Надежный Тыл: Семья и Дети</h2>
+                <div class="status-badge ready">Высший приоритет охраны</div>
+                <p>Главный штаб и верные соратники Сани, которые поддерживают его во всех огородных и жизненных авантюрах.</p>
+                <p>Верная команда, готовая и в огороде спину гнуть, и на праздничном банкете прикрывать фланги.</p>
+                <div class="intel-box">
+                    Статус: Семья — это святое. Ради них Саня готов перекопать даже целину.
                 </div>
-            </section>
-        </main>
+            </div>
+
+            <!-- ЛЮБИМЫЕ ДРУЗЬЯ -->
+            <div class="card">
+                <h2>Амигос & Любимые Друзья</h2>
+                <p>Настоящие партизаны («Guerrillas»), готовые прийти на помощь по первому свисту:</p>
+                <ul>
+                    <li><strong>Диверсионный отряд:</strong> Помогают копать картошку (и уничтожать запасы из погреба).</li>
+                    <li><strong>Группа поддержки:</strong> Эксперты по дегустации огородных культур и душевным разговорам до рассвета.</li>
+                    <li><strong>Верные амигос:</strong> Всегда на связи, если нужно достать редкие удобрения или просто зажечь.</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <footer>
+            © 2026 Свободный Огород Сани. Viva Libertad! Viva Саня!
+        </footer>
     </div>
 
-    <script>
-        function getNextNemanDate() {
-            const now = new Date();
-            let currentYear = now.getFullYear();
-            
-            // Создаем дату 17 июля текущего года (в JS месяцы идут от 0 до 11, поэтому июль — это 6)
-            let targetDate = new Date(currentYear, 6, 17, 0, 0, 0);
-            
-            // Если 17 июля в этом году уже прошло, переключаем на следующий год
-            if (now.getTime() > targetDate.getTime()) {
-                targetDate = new Date(currentYear + 1, 6, 17, 0, 0, 0);
-            }
-            
-            return targetDate.getTime();
-        }
-
-        function updateTimer() {
-            const countdownDate = getNextNemanDate();
-            const now = new Date().getTime();
-            const distance = countdownDate - now;
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            const d = days < 10 ? '0' + days : days;
-            const h = hours < 10 ? '0' + hours : hours;
-            const m = minutes < 10 ? '0' + minutes : minutes;
-            const s = seconds < 10 ? '0' + seconds : seconds;
-
-            document.getElementById("countdown").innerHTML = `${d}д ${h}ч ${m}м ${s}с`;
-
-            // Если на календаре именно 17 июля
-            const today = new Date();
-            if (today.getMonth() === 6 && today.getDate() === 17) {
-                document.getElementById("countdown").innerHTML = "МЫ НА НЁМАНЕ! 🍻🏕️";
-            }
-        }
-
-        const intervalId = setInterval(updateTimer, 1000);
-        updateTimer();
-    </script>
 </body>
 </html>
