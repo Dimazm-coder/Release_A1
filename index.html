@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>БУХЛОЧАТ — Официальный хаб</title>
     <style>
+        	  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image: url('bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(8px); /* Сила размытия: чем больше пикселей, тем сильнее размытие */
+    transform: scale(1.1); /* Слегка увеличивает фон, чтобы убрать белые края из-за размытия */
+  }
         :root {
             --bg-color: #121214;
             --card-bg: #1a1a1e;
