@@ -6,20 +6,22 @@
     <title>БУХЛОЧАТ — Официальный хаб</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #f59e0b;
+            --bg-color: #121214;
+            --card-bg: #1a1a1e;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --accent: #f59e0b;
             --accent-hover: #d97706;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --danger-color: #ef4444;
+            --danger: #ef4444;
+            --success: #10b981;
+            --border: #2d2d34;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
@@ -29,109 +31,103 @@
             padding-bottom: 60px;
         }
 
-        /* Заглушка авторизации */
+        /* Защита паролем */
         #auth-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--bg-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 10000;
-            padding: 20px;
+            z-index: 9999;
         }
 
         .auth-card {
             background-color: var(--card-bg);
-            padding: 30px;
+            padding: 40px;
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            max-width: 400px;
-            width: 100%;
+            border: 1px solid var(--border);
             text-align: center;
-            border: 1px solid #334155;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         .auth-card h2 {
             margin-bottom: 20px;
-            color: var(--accent-color);
             font-size: 1.5rem;
+            color: var(--accent);
         }
 
-        .auth-card input {
+        input[type="text"], input[type="number"], input[type="date"], select {
             width: 100%;
             padding: 12px;
+            background-color: #0f0f11;
+            border: 1px solid var(--border);
             border-radius: 8px;
-            border: 1px solid #475569;
-            background-color: #0f172a;
-            color: #fff;
+            color: var(--text-main);
             font-size: 1rem;
             margin-bottom: 15px;
             outline: none;
-            text-align: center;
+            transition: border-color 0.2s;
         }
 
-        .auth-card input:focus {
-            border-color: var(--accent-color);
+        input:focus, select:focus {
+            border-color: var(--accent);
         }
 
-        .auth-card button {
-            background-color: var(--accent-color);
-            color: #000;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
+        button {
             width: 100%;
-            transition: background 0.2s;
+            padding: 12px;
+            background-color: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
 
-        .auth-card button:hover {
+        button:hover {
             background-color: var(--accent-hover);
         }
 
         .error-msg {
-            color: var(--danger-color);
-            font-size: 0.9rem;
+            color: var(--danger);
             margin-top: 10px;
+            font-size: 0.9rem;
             display: none;
         }
 
-        /* Основной контент (скрыт до авторизации) */
+        /* Основной контент */
         #main-content {
             display: none;
         }
 
         header {
             background-color: var(--card-bg);
-            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            sticky: top;
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid #334155;
         }
 
-        nav {
+        .nav-container {
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+            padding: 15px 20px;
         }
 
         .logo {
+            font-weight: 800;
             font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--accent-color);
+            color: var(--accent);
             text-decoration: none;
-            letter-spacing: 1px;
         }
 
         .nav-links {
@@ -141,35 +137,33 @@
         }
 
         .nav-links a {
-            color: var(--text-main);
+            color: var(--text-muted);
             text-decoration: none;
-            font-weight: 500;
+            font-size: 0.95rem;
             transition: color 0.2s;
         }
 
         .nav-links a:hover {
-            color: var(--accent-color);
+            color: var(--text-main);
         }
 
         .container {
-            max-width: 1200px;
-            margin: 30px auto;
+            max-width: 800px;
+            margin: 40px auto;
             padding: 0 20px;
         }
 
         .hero {
             text-align: center;
-            padding: 60px 20px;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border-radius: 20px;
-            margin-bottom: 40px;
-            border: 1px solid #334155;
+            margin-bottom: 50px;
         }
 
         .hero h1 {
             font-size: 3rem;
             margin-bottom: 10px;
-            color: var(--text-main);
+            background: linear-gradient(45deg, var(--accent), #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero p {
@@ -178,275 +172,422 @@
         }
 
         section {
-            margin-bottom: 50px;
-            scroll-margin-top: 100px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            scroll-margin-top: 90px;
         }
 
         section h2 {
-            font-size: 2rem;
-            margin-bottom: 25px;
-            border-left: 5px solid var(--accent-color);
-            padding-left: 15px;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
         }
 
-        .timer-box {
-            background-color: var(--card-bg);
-            padding: 30px;
-            border-radius: 16px;
-            text-align: center;
-            border: 1px solid #334155;
-        }
-
+        /* Таймер */
         .timer-display {
-            font-size: 2.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .timer-block {
+            background-color: #0f0f11;
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 12px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .timer-amount {
+            font-size: 2rem;
             font-weight: bold;
-            letter-spacing: 2px;
-            color: var(--accent-color);
-            font-family: monospace;
-            margin-top: 10px;
+            color: var(--text-main);
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 16px;
-            border: 1px solid #334155;
-            transition: transform 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            color: var(--accent-color);
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-
-        .card p {
-            margin-bottom: 8px;
-        }
-
-        .card strong {
+        .timer-label {
+            font-size: 0.8rem;
             color: var(--text-muted);
+            text-transform: uppercase;
         }
 
-        .tg-btn {
-            display: inline-block;
-            background-color: #0088cc;
-            color: #fff;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+        .datepicker-container {
+            margin-top: 25px;
+            background: #0f0f11;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .datepicker-container label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Кастомный темный инпут даты */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) sepia(1) saturate(5) hue-rotate(15deg);
+            cursor: pointer;
+        }
+
+        /* Ближайшие встречи */
+        .meeting-card {
+            background-color: #0f0f11;
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            border-radius: 0 12px 12px 0;
+            margin-bottom: 15px;
+        }
+
+        .meeting-card h3 {
+            margin-bottom: 5px;
+        }
+
+        /* Калькулятор */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .calc-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+
+        .calc-results {
+            background-color: #0f0f11;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .calc-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .calc-item:last-child {
+            border-bottom: none;
+        }
+
+        .calc-val {
             font-weight: bold;
-            margin-top: 15px;
-            transition: background 0.2s;
+            color: var(--accent);
         }
 
-        .tg-btn:hover {
-            background-color: #0077b3;
+        /* Контакты */
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .contacts-grid { grid-template-columns: 1fr; }
         }
 
         .contact-group {
-            margin-bottom: 15px;
+            background: #0f0f11;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
         }
 
-        .contact-group h4 {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .contact-group h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .contact-line {
             margin-bottom: 8px;
-            border-bottom: 1px solid #475569;
-            padding-bottom: 4px;
+            font-size: 0.95rem;
         }
 
+        .tg-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .tg-link:hover { text-decoration: underline; }
+
+        /* Дни рождения */
         .birthday-list {
             list-style: none;
         }
 
-        .birthday-list li {
+        .birthday-item {
             padding: 10px 0;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid var(--border);
             display: flex;
-            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
         }
 
-        .birthday-list li:last-child {
-            border-bottom: none;
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                width: 100%;
-                justify-content: center;
-            }
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-        }
     </style>
 </head>
 <body>
 
-    <!-- Окно вопроса при входе -->
+    <!-- Аутентификация -->
     <div id="auth-overlay">
         <div class="auth-card">
-            <h2>Контрольный вопрос:</h2>
-            <p style="margin-bottom: 15px; color: var(--text-muted);">Имя Директора всей этой х..и?</p>
-            <input type="text" id="answer-input" placeholder="Введите имя..." onkeydown="if(event.key === 'Enter') checkAuth()">
-            <button onclick="checkAuth()">Войти</button>
-            <div id="error-message" class="error-msg">Неверно! Попробуй еще раз или спроси у Лены.</div>
+            <h2>Контрольный вопрос</h2>
+            <p style="color: var(--text-muted); margin-bottom: 15px;">Имя Директора всей этой х..и?</p>
+            <input type="text" id="auth-input" placeholder="Введите имя...">
+            <button onclick="checkAuth()">Войти в хаб</button>
+            <div id="auth-error" class="error-msg">Неверно! Директор расстроится.</div>
         </div>
     </div>
 
-    <!-- Основной сайт -->
+    <!-- Основной интерфейс -->
     <div id="main-content">
         <header>
-            <nav>
-                <a href="#hero" class="logo">БУХЛОЧАТ</a>
+            <nav class="nav-container">
+                <a href="#" class="logo">БУХЛОЧАТ</a>
                 <ul class="nav-links">
-                    <li><a href="#hero">Главное</a></li>
-                    <li><a href="#meetings">Встречи</a></li>
-                    <li><a href="#contacts">Контакты</a></li>
-                    <li><a href="#birthdays">Дни Рождения</a></li>
-                    <li><a href="#neman">До Нёмана</a></li>
+                    <li><a href="#timer-sec">До Нёмана</a></li>
+                    <li><a href="#meetings-sec">Встречи</a></li>
+                    <li><a href="#calc-sec">Алкометр</a></li>
+                    <li><a href="#contacts-sec">Контакты</a></li>
+                    <li><a href="#bdays-sec">ДР</a></li>
                 </ul>
             </nav>
         </header>
 
         <div class="container">
-            <section id="hero" class="hero">
+            <div class="hero">
                 <h1>БУХЛОЧАТ</h1>
-                <p>Официальный хаб душевных встреч, выездов на природу и хорошего настроения.</p>
-            </section>
+                <p>Официальный хаб душевных встреч и хорошего настроения</p>
+            </div>
 
-            <section id="neman">
-                <h2>До ежегодного выезда на Нёман осталось</h2>
-                <div class="timer-box">
-                    <div id="countdown" class="timer-display">00д 00ч 00м 00с</div>
+            <!-- Таймер до Немана -->
+            <section id="timer-sec">
+                <h2>До выезда на Нёман осталось</h2>
+                <div class="timer-display">
+                    <div class="timer-block"><div class="timer-amount" id="days">00</div><div class="timer-label">дн</div></div>
+                    <div class="timer-block"><div class="timer-amount" id="hours">00</div><div class="timer-label">ч</div></div>
+                    <div class="timer-block"><div class="timer-amount" id="minutes">00</div><div class="timer-label">мин</div></div>
+                    <div class="timer-block"><div class="timer-amount" id="seconds">00</div><div class="timer-label">сек</div></div>
+                </div>
+
+                <div class="datepicker-container">
+                    <label for="destination-date">Настроить свою дату выезда:</label>
+                    <input type="date" id="destination-date" onchange="updateCustomDate(this.value)">
                 </div>
             </section>
 
-            <section id="meetings">
+            <!-- Калькулятор алкоголя -->
+            <section id="calc-sec">
+                <h2>Калькулятор закупки алкоголя</h2>
+                <div class="calc-grid">
+                    <div class="calc-inputs">
+                        <label>Количество участников:</label>
+                        <input type="number" id="calc-people" value="10" min="1" oninput="calculateAlcohol()">
+
+                        <label>Интенсивность отдыха:</label>
+                        <select id="calc-intensity" onchange="calculateAlcohol()">
+                            <option value="light">Культурно посидеть (Лайт)</option>
+                            <option value="medium" selected>Нормальный выезд (Медиум)</option>
+                            <option value="hard">В сопли / До потери пульса (Хард)</option>
+                        </select>
+
+                        <label>Длительность (дней):</label>
+                        <input type="number" id="calc-days" value="2" min="1" oninput="calculateAlcohol()">
+                    </div>
+                    <div class="calc-results">
+                        <h3 style="margin-bottom: 15px; font-size: 1.1rem;">Рекомендуемая закупка:</h3>
+                        <div class="calc-item"><span>Крепкий алко (водка/виски):</span> <span class="calc-val" id="res-hard">0 л</span></div>
+                        <div class="calc-item"><span>Легкий алко (вино/шампань):</span> <span class="calc-val" id="res-light">0 л</span></div>
+                        <div class="calc-item"><span>Пивас (полирнуть/утро):</span> <span class="calc-val" id="res-beer">0 л</span></div>
+                        <div class="calc-item"><span>Запивон / Вода:</span> <span class="calc-val" id="res-water">0 л</span></div>
+                        <div class="calc-item"><span>Уголь (мешки 3кг):</span> <span class="calc-val" id="res-coal">0 шт</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ближайшие встречи -->
+            <section id="meetings-sec">
                 <h2>Ближайшие Встречи</h2>
-                <div class="grid">
-                    <div class="card">
-                        <h3>Пятничный сбор</h3>
-                        <p><strong>Когда:</strong> Каждую пятницу в 19:00</p>
-                        <p><strong>Где:</strong> Наше стандартное место / беседки</p>
-                    </div>
-                    <div class="card">
-                        <h3>Глобальный выезд</h3>
-                        <p><strong>Когда:</strong> Ежегодно 17 июля</p>
-                        <p><strong>Что брать:</strong> Лодки, палатки, казаны, хорошее настроение</p>
-                    </div>
+                <div class="meeting-card">
+                    <h3>Пятничный сбор</h3>
+                    <p><strong>Когда:</strong> Каждую пятницу в 19:00</p>
+                    <p><strong>Где:</strong> Наше стандартное место / беседки</p>
+                </div>
+                <div class="meeting-card">
+                    <h3>Глобальный выезд</h3>
+                    <p><strong>Когда:</strong> Ежегодно 17 июля</p>
+                    <p><strong>Что брать:</strong> Лодки, палатки, казаны, хорошее настроение</p>
                 </div>
             </section>
 
-            <section id="contacts">
+            <!-- Контакты -->
+            <section id="contacts-sec">
                 <h2>Контакты и Линки</h2>
-                <div class="grid">
-                    <div class="card">
-                        <h3>Наш Telegram Чат</h3>
-                        <p>Ссылка на основную флудилку для координации.</p>
-                        <a href="https://t.me/buhlochat_main" class="tg-btn" target="_blank">@buhlochat_main</a>
+                <div class="contacts-grid">
+                    <div class="contact-group">
+                        <h3>Ответственные за сбор</h3>
+                        <div class="contact-line"><strong>Aлкоматъ:</strong> Лена</div>
+                        <div class="contact-line"><strong>Главный по логистике:</strong> Артемий</div>
                     </div>
-                    <div class="card">
-                        <h3>Ответственные лица</h3>
-                        
-                        <div class="contact-group">
-                            <h4>Ответственные за сбор</h4>
-                            <p><strong>Aлкоматъ:</strong> Лена</p>
-                            <p><strong>Главный по логистике:</strong> Артемий</p>
-                        </div>
-
-                        <div class="contact-group" style="margin-top: 15px;">
-                            <h4>Ответственные за кухню</h4>
-                            <p><strong>Админ по мясу:</strong> Твой гинеколог</p>
-                            <p><strong>Поедатель картохи:</strong> Сергеич <span style="color: var(--text-muted); font-size: 0.85rem;">(и его Альтер Эго)</span></p>
-                            <p><strong>Аучар:</strong> все знают ее под именем Катя</p>
-                        </div>
+                    <div class="contact-group">
+                        <h3>Ответственные за кухню</h3>
+                        <div class="contact-line"><strong>Админ по мясу:</strong> Твой гинеколог</div>
+                        <div class="contact-line"><strong>Картоха & Альтер Эго:</strong> Сергеич</div>
+                        <div class="contact-line"><strong>Аучар:</strong> Катя (все знают её)</div>
                     </div>
+                </div>
+                <div style="text-align: center;">
+                    <a href="https://t.me/buhlochat_main" target="_blank" class="tg-link">✈ Наша основная флудилка в Telegram (@buhlochat_main)</a>
                 </div>
             </section>
 
-            <section id="birthdays">
+            <!-- Дни рождения -->
+            <section id="bdays-sec">
                 <h2>Дни Рождения</h2>
-                <div class="grid">
-                    <div class="card">
-                        <h3>Сентябрь</h3>
-                        <ul class="birthday-list">
-                            <li><span>🎉 Александр</span> <span>12.09</span></li>
-                            <li><span>🎉 Марина</span> <span>25.09</span></li>
-                        </ul>
-                    </div>
-                    <div class="card">
-                        <h3>Октябрь</h3>
-                        <ul class="birthday-list">
-                            <li><span>🎉 Дмитрий</span> <span>05.10</span></li>
-                            <li><span>🎉 Светлана</span> <span>18.10</span></li>
-                        </ul>
-                    </div>
-                </div>
+                <h3 style="font-size: 1.1rem; color: var(--accent); margin: 15px 0 5px 0;">Сентябрь</h3>
+                <ul class="birthday-list">
+                    <li class="birthday-item">🎉 12.09 — Александр</li>
+                    <li class="birthday-item">🎉 25.09 — Марина</li>
+                </ul>
+                <h3 style="font-size: 1.1rem; color: var(--accent); margin: 20px 0 5px 0;">Октябрь</h3>
+                <ul class="birthday-list">
+                    <li class="birthday-item">🎉 05.10 — Дмитрий</li>
+                    <li class="birthday-item">🎉 18.10 — Светлана</li>
+                </ul>
             </section>
         </div>
     </div>
 
     <script>
-        // Функция проверки ответа на секретный вопрос
+        let countdownInterval;
+        let targetDateString = "";
+
+        // Аутентификация
         function checkAuth() {
-            const input = document.getElementById('answer-input').value.trim();
-            const errorMsg = document.getElementById('error-message');
-            
-            // Проверка (регистронезависимая)
-            if (input.toLowerCase() === 'лена') {
+            const val = document.getElementById('auth-input').value.trim().toLowerCase();
+            if (val === 'лена') {
                 document.getElementById('auth-overlay').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-                // Запускаем таймер только после успешного входа
-                startTimer();
+                localStorage.setItem('buhlo_auth', 'true');
+                initPage();
             } else {
-                errorMsg.style.display = 'block';
+                document.getElementById('auth-error').style.display = 'block';
             }
         }
 
-        // Таймер обратного отсчета до 17 июля
-        function startTimer() {
-            function updateCountdown() {
+        // Авто-вход если уже вводили
+        window.onload = function() {
+            if (localStorage.getItem('buhlo_auth') === 'true') {
+                document.getElementById('auth-overlay').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                initPage();
+            }
+            // Установка минимальной даты для инпута (сегодня)
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('destination-date').min = today;
+        };
+
+        function initPage() {
+            // Получаем сохраненную дату или ставим по умолчанию 17 июля
+            let savedDate = localStorage.getItem('buhlo_target_date');
+            if (!savedDate) {
                 const now = new Date();
                 let currentYear = now.getFullYear();
-                let targetDate = new Date(`July 17, ${currentYear} 00:00:00`);
+                let defaultTarget = new Date(`${currentYear}-07-17T00:00:00`);
+                if (now > defaultTarget) {
+                    defaultTarget = new Date(`${currentYear + 1}-07-17T00:00:00`);
+                }
+                savedDate = defaultTarget.toISOString().split('T')[0];
+            }
+            
+            document.getElementById('destination-date').value = savedDate;
+            targetDateString = savedDate + 'T00:00:00';
+            
+            startTimer();
+            calculateAlcohol();
+        }
 
-                // Если 17 июля в этом году уже прошло, ставим таймер на следующий год
-                if (now > targetDate) {
-                    targetDate = new Date(`July 17, ${currentYear + 1} 00:00:00`);
+        function updateCustomDate(val) {
+            if(!val) return;
+            localStorage.setItem('buhlo_target_date', val);
+            targetDateString = val + 'T00:00:00';
+            startTimer();
+        }
+
+        function startTimer() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            
+            function tick() {
+                const target = new Date(targetDateString).getTime();
+                const now = new Date().getTime();
+                const difference = target - now;
+
+                if (difference <= 0) {
+                    document.getElementById('days').innerText = '00';
+                    document.getElementById('hours').innerText = '00';
+                    document.getElementById('minutes').innerText = '00';
+                    document.getElementById('seconds').innerText = '00';
+                    clearInterval(countdownInterval);
+                    return;
                 }
 
-                const diff = targetDate - now;
+                const d = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((difference % (1000 * 60)) / 1000);
 
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-                // Форматирование с ведущими нулями
-                const d = days < 10 ? '0' + days : days;
-                const h = hours < 10 ? '0' + hours : hours;
-                const m = minutes < 10 ? '0' + minutes : minutes;
-                const s = seconds < 10 ? '0' + seconds : seconds;
-
-                document.getElementById('countdown').innerHTML = `${d}д ${h}ч ${m}м ${s}с`;
+                document.getElementById('days').innerText = d < 10 ? '0' + d : d;
+                document.getElementById('hours').innerText = h < 10 ? '0' + h : h;
+                document.getElementById('minutes').innerText = m < 10 ? '0' + m : m;
+                document.getElementById('seconds').innerText = s < 10 ? '0' + s : s;
             }
 
-            updateCountdown();
-            setInterval(updateCountdown, 1000);
+            tick();
+            countdownInterval = setInterval(tick, 1000);
+        }
+
+        // Алкогольный калькулятор
+        function calculateAlcohol() {
+            const people = parseInt(document.getElementById('calc-people').value) || 0;
+            const days = parseInt(document.getElementById('calc-days').value) || 0;
+            const intensity = document.getElementById('calc-intensity').value;
+
+            let coeffHard = 0.25;  // литры на человека в день
+            let coeffLight = 0.35; 
+            let coeffBeer = 0.7;
+            let coeffWater = 1.5;
+
+            if (intensity === 'light') {
+                coeffHard = 0.15; coeffLight = 0.25; coeffBeer = 0.4; coeffWater = 1.0;
+            } else if (intensity === 'hard') {
+                coeffHard = 0.45; coeffLight = 0.4; coeffBeer = 1.2; coeffWater = 2.5;
+            }
+
+            const totalHard = (people * coeffHard * days).toFixed(1);
+            const totalLight = (people * coeffLight * days).toFixed(1);
+            const totalBeer = (people * coeffBeer * days).toFixed(1);
+            const totalWater = (people * coeffWater * days).toFixed(1);
+            const totalCoal = Math.ceil((people * days) / 5);
+
+            document.getElementById('res-hard').innerText = totalHard + ' л';
+            document.getElementById('res-light').innerText = totalLight + ' л';
+            document.getElementById('res-beer').innerText = totalBeer + ' л';
+            document.getElementById('res-water').innerText = totalWater + ' л';
+            document.getElementById('res-coal').innerText = totalCoal + ' шт';
         }
     </script>
 </body>
