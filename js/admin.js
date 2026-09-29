@@ -3,6 +3,12 @@ const ADMIN_KEY = 'buhlo_admin_password';
 const ADMIN_SESSION_KEY = 'buhlo_admin_logged_in';
 const DEFAULT_ADMIN_PASSWORD = 'лена';
 
+// GitHub API configuration
+const GITHUB_OWNER = 'Dimazm-coder';
+const GITHUB_REPO = 'Release_A1';
+const GITHUB_TOKEN = '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';
+const GITHUB_API_URL = 'https://api.github.com/repos';
+
 let appEvents = [];
 let editingEventId = null;
 
@@ -267,6 +273,135 @@ function importEventsJson(input) {
     reader.readAsText(file);
 }
 
+// GitHub API Functions
+async function getFileFromGitHub(filePath) {
+    try {
+        const response = await fetch(`${GITHUB_API_URL}/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`, {
+            headers: {
+                'Authorization': `token ${GITHUB_TOKEN}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return {
+            content: atob(data.content),
+            sha: data.sha
+        };
+    } catch (error) {
+        console.error('Error fetching from GitHub:', error);
+        throw error;
+    }
+}
+
+async function updateFileInGitHub(filePath, content, message) {
+    try {
+        // First get the current file to get its SHA
+        const fileData = await getFileFromGitHub(filePath);
+        const sha = fileData.sha;
+
+        const response = await fetch(`${GITHUB_API_URL}/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${GITHUB_TOKEN}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                content: btoa(content),
+                sha: sha
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to update: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error updating GitHub:', error);
+        throw error;
+    }
+}
+
+async function loadEventsFromGitHub() {
+    try {
+        const statusEl = document.getElementById('github-status');
+        if (statusEl) statusEl.textContent = 'Загрузка...';
+
+        const fileData = await getFileFromGitHub('events.json');
+        const parsed = JSON.parse(fileData.content);
+        
+        appEvents = Array.isArray(parsed) ? parsed : (parsed.events || getDefaultEvents());
+        localStorage.setItem(EVENTS_KEY, JSON.stringify(appEvents));
+        renderEvents();
+
+        if (statusEl) {
+            statusEl.textContent = '✅ События загружены из GitHub';
+            setTimeout(() => statusEl.textContent = '', 3000);
+        }
+        alert('✅ События успешно загружены из GitHub!');
+    } catch (error) {
+        console.error('Error:', error);
+        if (statusEl) statusEl.textContent = '❌ Ошибка загрузки';
+        alert('❌ Ошибка при загрузке из GitHub: ' + error.message);
+    }
+}
+
+async function saveEventsToGitHub() {
+    try {
+        const statusEl = document.getElementById('github-status');
+        if (statusEl) statusEl.textContent = 'Сохранение...';
+
+        const content = JSON.stringify({ events: appEvents }, null, 2);
+        await updateFileInGitHub('events.json', content, 'Update events from admin panel');
+
+        if (statusEl) {
+            statusEl.textContent = '✅ События сохранены в GitHub';
+            setTimeout(() => statusEl.textContent = '', 3000);
+        }
+        alert('✅ События успешно сохранены в GitHub репозиторий!');
+    } catch (error) {
+        console.error('Error:', error);
+        if (statusEl) statusEl.textContent = '❌ Ошибка сохранения';
+        alert('❌ Ошибка при сохранении в GitHub: ' + error.message);
+    }
+}
+
+async function savePasswordToGitHub(newPassword) {
+    try {
+        const statusEl = document.getElementById('password-github-status');
+        if (statusEl) statusEl.textContent = 'Сохранение пароля...';
+
+        // Read current main.js
+        const fileData = await getFileFromGitHub('js/main.js');
+        let content = fileData.content;
+
+        // Replace password in the file
+        content = content.replace(
+            /const DEFAULT_ADMIN_PASSWORD = '[^']*';/,
+            `const DEFAULT_ADMIN_PASSWORD = '${newPassword}';`
+        );
+
+        await updateFileInGitHub('js/main.js', content, 'Update admin password');
+
+        if (statusEl) {
+            statusEl.textContent = '✅ Пароль сохранён в GitHub';
+            setTimeout(() => statusEl.textContent = '', 3000);
+        }
+        alert('✅ Пароль успешно сохранён в GitHub!');
+    } catch (error) {
+        console.error('Error:', error);
+        if (statusEl) statusEl.textContent = '❌ Ошибка сохранения';
+        alert('❌ Ошибка при сохранении пароля в GitHub: ' + error.message);
+    }
+}
+
 function changeAdminPassword() {
     const currentPassword = document.getElementById('current-password').value;
     const newPassword = document.getElementById('new-password').value;
@@ -297,9 +432,14 @@ function changeAdminPassword() {
         return;
     }
 
+    // Save to localStorage first
     localStorage.setItem(ADMIN_KEY, newPassword);
-    messageBox.textContent = 'Пароль успешно изменён';
+    messageBox.textContent = 'Пароль успешно изменён локально. Сохраняю в GitHub...';
     messageBox.classList.remove('hidden');
+
+    // Save to GitHub
+    savePasswordToGitHub(newPassword);
+
     document.getElementById('current-password').value = '';
     document.getElementById('new-password').value = '';
     document.getElementById('confirm-password').value = '';
