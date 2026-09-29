@@ -42,10 +42,16 @@
                 </div>
 
                 <div class="admin-actions" style="margin-top: 20px;">
-                    <button type="button" class="secondary" onclick="downloadEventsJson()">Скачать events.json</button>
+                    <button type="button" class="secondary" onclick="downloadEventsJson()">📥 Скачать events.json</button>
                     <input id="import-events-input" type="file" accept="application/json" class="hidden" onchange="importEventsJson(this)" />
-                    <button type="button" class="secondary" onclick="document.getElementById('import-events-input').click()">Импорт JSON</button>
+                    <button type="button" class="secondary" onclick="document.getElementById('import-events-input').click()">📤 Импорт JSON</button>
                 </div>
+
+                <div class="admin-actions" style="margin-top: 20px; gap: 10px;">
+                    <button type="button" class="success" onclick="saveEventsToGitHub()">💾 Сохранить в GitHub</button>
+                    <button type="button" class="info" onclick="loadEventsFromGitHub()">🔄 Загрузить из GitHub</button>
+                </div>
+                <div id="github-status" style="text-align: center; margin-top: 10px; font-size: 0.9rem; color: #10b981;"></div>
             </section>
 
             <section class="panel">
@@ -63,6 +69,7 @@
                         <button type="button" onclick="changeAdminPassword()">Сохранить новый пароль</button>
                     </div>
                     <div id="password-message" class="status-message hidden"></div>
+                    <div id="password-github-status" style="text-align: center; margin-top: 10px; font-size: 0.9rem; color: #10b981;"></div>
                 </div>
             </section>
         </div>
