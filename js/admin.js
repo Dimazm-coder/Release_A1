@@ -3,11 +3,9 @@ const ADMIN_KEY = 'buhlo_admin_password';
 const ADMIN_SESSION_KEY = 'buhlo_admin_logged_in';
 const DEFAULT_ADMIN_PASSWORD = 'лена';
 
-// GitHub API configuration
-const GITHUB_OWNER = 'Dimazm-coder';
-const GITHUB_REPO = 'Release_A1';
-const GITHUB_TOKEN = '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';
-const GITHUB_API_URL = 'https://api.github.com/repos';
+// Optional server-side proxy. The GitHub token must be stored only on that server.
+// Example: window.BUHLO_API_URL = 'https://your-api.example.com';
+const API_URL = (window.BUHLO_API_URL || '').replace(/\/$/, '');
 
 let appEvents = [];
 let editingEventId = null;
@@ -78,16 +76,22 @@ function getDefaultEvents() {
     ];
 }
 
+function parseEvents(value) {
+    const parsed = typeof value === 'string' ? JSON.parse(value) : value;
+    const events = Array.isArray(parsed) ? parsed : parsed?.events;
+    return Array.isArray(events) ? events : getDefaultEvents();
+}
+
 function getSavedEvents() {
     const raw = localStorage.getItem(EVENTS_KEY);
     if (!raw) {
-        localStorage.setItem(EVENTS_KEY, JSON.stringify(getDefaultEvents()));
-        return getDefaultEvents();
+        const defaults = getDefaultEvents();
+        localStorage.setItem(EVENTS_KEY, JSON.stringify(defaults));
+        return defaults;
     }
 
     try {
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : (parsed.events || getDefaultEvents());
+        return parseEvents(raw);
     } catch (error) {
         return getDefaultEvents();
     }
@@ -97,16 +101,16 @@ async function loadEvents() {
     appEvents = getSavedEvents();
 
     try {
-        const response = await fetch('../data/events.json');
+        const response = await fetch('../data/events.json', { cache: 'no-store' });
         if (response.ok) {
             const data = await response.json();
-            if (data && Array.isArray(data.events)) {
+            if (Array.isArray(data.events)) {
                 appEvents = data.events;
                 localStorage.setItem(EVENTS_KEY, JSON.stringify(appEvents));
             }
         }
     } catch (error) {
-        console.log('No file fetch, using localStorage');
+        console.log('Using localStorage events:', error.message);
     }
 
     renderEvents();
@@ -123,13 +127,12 @@ function renderEvents() {
 
     list.innerHTML = appEvents.map(event => {
         const participants = Array.isArray(event.participants) ? event.participants : [];
-        const dateText = event.date ? formatDate(event.date) : 'Дата не указана';
         return `
             <div class="event-item">
-                <h4>${event.title}</h4>
+                <h4>${event.title || 'Без названия'}</h4>
                 <p>${event.description || 'Описание отсутствует'}</p>
                 <div class="event-meta">
-                    <span class="tag">${dateText}</span>
+                    <span class="tag">${event.date ? formatDate(event.date) : 'Дата не указана'}</span>
                     <span class="tag">${event.time || 'Время не указано'}</span>
                     <span class="tag">${event.location || 'Место не указано'}</span>
                     <span class="tag">${participants.length}/${event.maxParticipants || 30}</span>
@@ -149,7 +152,7 @@ function formatDate(dateString) {
     return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
-function saveEvent() {
+async function saveEvent() {
     const title = document.getElementById('event-title').value.trim();
     const date = document.getElementById('event-date').value;
     const time = document.getElementById('event-time').value;
@@ -163,34 +166,35 @@ function saveEvent() {
     }
 
     if (editingEventId !== null) {
-        const idx = appEvents.findIndex(item => item.id === editingEventId);
-        if (idx >= 0) {
-            appEvents[idx] = {
-                ...appEvents[idx],
-                title,
-                date,
-                time,
-                location: location || appEvents[idx].location || 'Место не указано',
-                description: description || appEvents[idx].description || 'Описание события скоро появится.',
+        const index = appEvents.findIndex(item => item.id === editingEventId);
+        if (index >= 0) {
+            appEvents[index] = {
+                ...appEvents[index], title, date, time,
+                location: location || appEvents[index].location || 'Место не указано',
+                description: description || appEvents[index].description || 'Описание события скоро появится.',
                 maxParticipants: limit
             };
         }
     } else {
         appEvents.unshift({
-            id: Date.now(),
-            title,
-            date,
-            time,
+            id: Date.now(), title, date, time,
             location: location || 'Место не указано',
             description: description || 'Описание события скоро появится.',
-            participants: [],
-            maxParticipants: limit
+            participants: [], maxParticipants: limit
         });
     }
 
     localStorage.setItem(EVENTS_KEY, JSON.stringify(appEvents));
     renderEvents();
     resetForm();
+
+    if (API_URL) {
+        try {
+            await saveEventsToServer();
+        } catch (error) {
+            alert('Локально сохранено, но серверная синхронизация не удалась: ' + error.message);
+        }
+    }
 }
 
 function editEvent(eventId) {
@@ -205,19 +209,23 @@ function editEvent(eventId) {
     document.getElementById('event-description').value = event.description || '';
     document.getElementById('event-limit').value = event.maxParticipants || 30;
 
-    const actionsButton = document.querySelector('.admin-actions button');
-    if (actionsButton) {
-        actionsButton.textContent = 'Обновить событие';
-    }
+    const button = document.querySelector('.admin-actions button');
+    if (button) button.textContent = 'Обновить событие';
 }
 
-function deleteEvent(eventId) {
+async function deleteEvent(eventId) {
     if (!confirm('Удалить событие?')) return;
     appEvents = appEvents.filter(item => item.id !== eventId);
     localStorage.setItem(EVENTS_KEY, JSON.stringify(appEvents));
     renderEvents();
-    if (editingEventId === eventId) {
-        resetForm();
+    if (editingEventId === eventId) resetForm();
+
+    if (API_URL) {
+        try {
+            await saveEventsToServer();
+        } catch (error) {
+            alert('Локально удалено, но серверная синхронизация не удалась: ' + error.message);
+        }
     }
 }
 
@@ -230,22 +238,19 @@ function resetForm() {
     document.getElementById('event-description').value = '';
     document.getElementById('event-limit').value = 30;
 
-    const actionsButton = document.querySelector('.admin-actions button');
-    if (actionsButton) {
-        actionsButton.textContent = 'Сохранить событие';
-    }
+    const button = document.querySelector('.admin-actions button');
+    if (button) button.textContent = 'Сохранить событие';
 }
 
 function downloadEventsJson() {
-    const data = JSON.stringify({ events: appEvents }, null, 2);
-    const blob = new Blob([data], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify({ events: appEvents }, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'events.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'events.json';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
     URL.revokeObjectURL(url);
 }
 
@@ -254,152 +259,50 @@ function importEventsJson(input) {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function (event) {
+    reader.onload = async event => {
         try {
-            const parsed = JSON.parse(event.target.result);
-            const items = Array.isArray(parsed) ? parsed : parsed.events;
-            if (!Array.isArray(items)) {
-                throw new Error('Некорректный формат JSON');
-            }
-            appEvents = items;
+            appEvents = parseEvents(event.target.result);
             localStorage.setItem(EVENTS_KEY, JSON.stringify(appEvents));
             renderEvents();
             alert('JSON успешно импортирован');
+            if (API_URL) await saveEventsToServer();
         } catch (error) {
             alert('Ошибка импорта: ' + error.message);
+        } finally {
+            input.value = '';
         }
-        input.value = '';
     };
     reader.readAsText(file);
 }
 
-// GitHub API Functions
-async function getFileFromGitHub(filePath) {
-    try {
-        const response = await fetch(`${GITHUB_API_URL}/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`, {
-            headers: {
-                'Authorization': `token ${GITHUB_TOKEN}`,
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Failed to fetch: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return {
-            content: atob(data.content),
-            sha: data.sha
-        };
-    } catch (error) {
-        console.error('Error fetching from GitHub:', error);
-        throw error;
-    }
+// These functions call your own backend. The backend, not this browser code,
+// must keep the GitHub token and update data/events.json through GitHub API.
+async function loadEventsFromServer() {
+    if (!API_URL) throw new Error('BUHLO_API_URL не настроен');
+    const response = await fetch(`${API_URL}/events`, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    appEvents = parseEvents(await response.json());
+    localStorage.setItem(EVENTS_KEY, JSON.stringify(appEvents));
+    renderEvents();
 }
 
-async function updateFileInGitHub(filePath, content, message) {
-    try {
-        // First get the current file to get its SHA
-        const fileData = await getFileFromGitHub(filePath);
-        const sha = fileData.sha;
-
-        const response = await fetch(`${GITHUB_API_URL}/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${filePath}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `token ${GITHUB_TOKEN}`,
-                'Accept': 'application/vnd.github.v3+json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: message,
-                content: btoa(content),
-                sha: sha
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Failed to update: ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error updating GitHub:', error);
-        throw error;
-    }
+async function saveEventsToServer() {
+    if (!API_URL) throw new Error('BUHLO_API_URL не настроен');
+    const response = await fetch(`${API_URL}/events`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ events: appEvents })
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
 }
 
-async function loadEventsFromGitHub() {
-    try {
-        const statusEl = document.getElementById('github-status');
-        if (statusEl) statusEl.textContent = 'Загрузка...';
-
-        const fileData = await getFileFromGitHub('events.json');
-        const parsed = JSON.parse(fileData.content);
-        
-        appEvents = Array.isArray(parsed) ? parsed : (parsed.events || getDefaultEvents());
-        localStorage.setItem(EVENTS_KEY, JSON.stringify(appEvents));
-        renderEvents();
-
-        if (statusEl) {
-            statusEl.textContent = '✅ События загружены из GitHub';
-            setTimeout(() => statusEl.textContent = '', 3000);
-        }
-        alert('✅ События успешно загружены из GitHub!');
-    } catch (error) {
-        console.error('Error:', error);
-        if (statusEl) statusEl.textContent = '❌ Ошибка загрузки';
-        alert('❌ Ошибка при загрузке из GitHub: ' + error.message);
-    }
+// Backwards-compatible names for the existing admin HTML buttons.
+function loadEventsFromGitHub() {
+    return loadEventsFromServer();
 }
 
-async function saveEventsToGitHub() {
-    try {
-        const statusEl = document.getElementById('github-status');
-        if (statusEl) statusEl.textContent = 'Сохранение...';
-
-        const content = JSON.stringify({ events: appEvents }, null, 2);
-        await updateFileInGitHub('events.json', content, 'Update events from admin panel');
-
-        if (statusEl) {
-            statusEl.textContent = '✅ События сохранены в GitHub';
-            setTimeout(() => statusEl.textContent = '', 3000);
-        }
-        alert('✅ События успешно сохранены в GitHub репозиторий!');
-    } catch (error) {
-        console.error('Error:', error);
-        if (statusEl) statusEl.textContent = '❌ Ошибка сохранения';
-        alert('❌ Ошибка при сохранении в GitHub: ' + error.message);
-    }
-}
-
-async function savePasswordToGitHub(newPassword) {
-    try {
-        const statusEl = document.getElementById('password-github-status');
-        if (statusEl) statusEl.textContent = 'Сохранение пароля...';
-
-        // Read current main.js
-        const fileData = await getFileFromGitHub('js/main.js');
-        let content = fileData.content;
-
-        // Replace password in the file
-        content = content.replace(
-            /const DEFAULT_ADMIN_PASSWORD = '[^']*';/,
-            `const DEFAULT_ADMIN_PASSWORD = '${newPassword}';`
-        );
-
-        await updateFileInGitHub('js/main.js', content, 'Update admin password');
-
-        if (statusEl) {
-            statusEl.textContent = '✅ Пароль сохранён в GitHub';
-            setTimeout(() => statusEl.textContent = '', 3000);
-        }
-        alert('✅ Пароль успешно сохранён в GitHub!');
-    } catch (error) {
-        console.error('Error:', error);
-        if (statusEl) statusEl.textContent = '❌ Ошибка сохранения';
-        alert('❌ Ошибка при сохранении пароля в GitHub: ' + error.message);
-    }
+function saveEventsToGitHub() {
+    return saveEventsToServer();
 }
 
 function changeAdminPassword() {
@@ -410,45 +313,26 @@ function changeAdminPassword() {
 
     if (!currentPassword || !newPassword || !confirmPassword) {
         messageBox.textContent = 'Заполните все поля';
-        messageBox.classList.remove('hidden');
-        return;
-    }
-
-    if (currentPassword !== getCurrentPassword()) {
+    } else if (currentPassword !== getCurrentPassword()) {
         messageBox.textContent = 'Текущий пароль введён неверно';
-        messageBox.classList.remove('hidden');
-        return;
-    }
-
-    if (newPassword.length < 3) {
+    } else if (newPassword.length < 3) {
         messageBox.textContent = 'Новый пароль должен быть не короче 3 символов';
-        messageBox.classList.remove('hidden');
-        return;
-    }
-
-    if (newPassword !== confirmPassword) {
+    } else if (newPassword !== confirmPassword) {
         messageBox.textContent = 'Новый пароль и подтверждение не совпадают';
-        messageBox.classList.remove('hidden');
-        return;
+    } else {
+        localStorage.setItem(ADMIN_KEY, newPassword);
+        messageBox.textContent = 'Пароль изменён на этом устройстве';
+        document.getElementById('current-password').value = '';
+        document.getElementById('new-password').value = '';
+        document.getElementById('confirm-password').value = '';
     }
 
-    // Save to localStorage first
-    localStorage.setItem(ADMIN_KEY, newPassword);
-    messageBox.textContent = 'Пароль успешно изменён локально. Сохраняю в GitHub...';
     messageBox.classList.remove('hidden');
-
-    // Save to GitHub
-    savePasswordToGitHub(newPassword);
-
-    document.getElementById('current-password').value = '';
-    document.getElementById('new-password').value = '';
-    document.getElementById('confirm-password').value = '';
 }
 
 document.addEventListener('DOMContentLoaded', function () {
     ensureAdminPassword();
-    const isAdmin = localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
-    if (isAdmin) {
+    if (localStorage.getItem(ADMIN_SESSION_KEY) === 'true') {
         showDashboard();
         loadEvents();
     }
