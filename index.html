@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>БУХЛОЧАТ — Официальный хаб</title>
     <style>
-        	  body::before {
+          body::before {
     content: "";
     position: fixed;
     top: 0;
@@ -17,8 +17,8 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    filter: blur(8px); /* Сила размытия: чем больше пикселей, тем сильнее размытие */
-    transform: scale(1.1); /* Слегка увеличивает фон, чтобы убрать белые края из-за размытия */
+    filter: blur(8px);
+    transform: scale(1.1);
   }
         :root {
             --bg-color: #121214;
@@ -30,6 +30,7 @@
             --danger: #ef4444;
             --success: #10b981;
             --border: #2d2d34;
+            --soft: #0f0f11;
         }
 
         * {
@@ -46,7 +47,6 @@
             padding-bottom: 60px;
         }
 
-        /* Защита паролем */
         #auth-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -74,7 +74,7 @@
             color: var(--accent);
         }
 
-        input[type="text"], input[type="number"], input[type="date"], select {
+        input[type="text"], input[type="number"], input[type="date"], select, textarea {
             width: 100%;
             padding: 12px;
             background-color: #0f0f11;
@@ -87,7 +87,12 @@
             transition: border-color 0.2s;
         }
 
-        input:focus, select:focus {
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        input:focus, select:focus, textarea:focus {
             border-color: var(--accent);
         }
 
@@ -115,7 +120,6 @@
             display: none;
         }
 
-        /* Основной контент */
         #main-content {
             display: none;
         }
@@ -202,7 +206,6 @@
             padding-bottom: 10px;
         }
 
-        /* Таймер */
         .timer-display {
             display: flex;
             justify-content: center;
@@ -246,14 +249,12 @@
             font-size: 0.9rem;
         }
 
-        /* Кастомный темный инпут даты */
         input[type="date"]::-webkit-calendar-picker-indicator {
             filter: invert(1) sepia(1) saturate(5) hue-rotate(15deg);
             cursor: pointer;
         }
 
-        /* Ближайшие встречи */
-        .meeting-card {
+        .meeting-card, .event-card {
             background-color: #0f0f11;
             border-left: 4px solid var(--accent);
             padding: 15px;
@@ -261,20 +262,118 @@
             margin-bottom: 15px;
         }
 
-        .meeting-card h3 {
-            margin-bottom: 5px;
+        .meeting-card h3, .event-card h3 {
+            margin-bottom: 8px;
         }
 
-        /* Калькулятор */
+        .event-card {
+            border-left: 4px solid var(--success);
+            margin-bottom: 20px;
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .event-date {
+            display: inline-block;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .event-badge {
+            background: rgba(16,185,129,0.15);
+            border: 1px solid rgba(16,185,129,0.5);
+            color: var(--success);
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 12px 0;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .secondary-btn, .ghost-btn, .admin-action {
+            width: auto;
+            min-width: 150px;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+        }
+
+        .ghost-btn {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .ghost-btn:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        .registration-form {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .registered-badge {
+            margin-top: 10px;
+            display: inline-block;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 0.85rem;
+            padding: 5px 10px;
+            background: rgba(16,185,129,0.12);
+            border: 1px solid rgba(16,185,129,0.4);
+            border-radius: 999px;
+        }
+
+        .participants-list {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .participant-pill {
+            background: rgba(245,158,11,0.12);
+            color: #ffd65c;
+            border: 1px solid rgba(245,158,11,0.4);
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+        }
+
         .calc-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-        
+
         @media (max-width: 600px) {
             .calc-grid { grid-template-columns: 1fr; }
             .nav-links { display: none; }
+            .event-header { flex-direction: column; }
+            .event-actions { flex-direction: column; }
         }
 
         .calc-results {
@@ -300,7 +399,6 @@
             color: var(--accent);
         }
 
-        /* Контакты */
         .contacts-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -339,7 +437,6 @@
 
         .tg-link:hover { text-decoration: underline; }
 
-        /* Дни рождения */
         .birthday-list {
             list-style: none;
         }
@@ -352,11 +449,48 @@
             gap: 10px;
         }
 
+        .hidden {
+            display: none !important;
+        }
+
+        .admin-panel {
+            background: rgba(15, 15, 17, 0.96);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .admin-panel h3 {
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .admin-actions button {
+            width: auto;
+            min-width: 180px;
+        }
+
+        @media (max-width: 700px) {
+            .admin-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Аутентификация -->
     <div id="auth-overlay">
         <div class="auth-card">
             <h2>Контрольный вопрос</h2>
@@ -367,12 +501,12 @@
         </div>
     </div>
 
-    <!-- Основной интерфейс -->
     <div id="main-content">
         <header>
             <nav class="nav-container">
                 <a href="#" class="logo">БУХЛОЧАТ</a>
                 <ul class="nav-links">
+                    <li><a href="#events-sec">События</a></li>
                     <li><a href="#timer-sec">До Нёмана</a></li>
                     <li><a href="#meetings-sec">Встречи</a></li>
                     <li><a href="#calc-sec">Алкометр</a></li>
@@ -388,7 +522,11 @@
                 <p>Официальный хаб душевных встреч и хорошего настроения</p>
             </div>
 
-            <!-- Таймер до Немана -->
+            <section id="events-sec">
+                <h2>Ближайшие события</h2>
+                <div id="events-list">Загрузка событий...</div>
+            </section>
+
             <section id="timer-sec">
                 <h2>До выезда на Нёман осталось</h2>
                 <div class="timer-display">
@@ -404,7 +542,6 @@
                 </div>
             </section>
 
-            <!-- Калькулятор алкоголя -->
             <section id="calc-sec">
                 <h2>Калькулятор закупки алкоголя</h2>
                 <div class="calc-grid">
@@ -428,12 +565,11 @@
                         <div class="calc-item"><span>Легкий алко (вино/шампань):</span> <span class="calc-val" id="res-light">0 л</span></div>
                         <div class="calc-item"><span>Пивас (полирнуть/утро):</span> <span class="calc-val" id="res-beer">0 л</span></div>
                         <div class="calc-item"><span>Запивон / Вода:</span> <span class="calc-val" id="res-water">0 л</span></div>
-                        <div class="calc-item"><span>Уголь (мешки 3кг):</span> <span class="calc-val" id="res-coal">0 шт</span></div>
+                        <div class="calc-item"><span>Уголь (мешк�� 3кг):</span> <span class="calc-val" id="res-coal">0 шт</span></div>
                     </div>
                 </div>
             </section>
 
-            <!-- Ближайшие встречи -->
             <section id="meetings-sec">
                 <h2>Ближайшие Встречи</h2>
                 <div class="meeting-card">
@@ -448,13 +584,12 @@
                 </div>
             </section>
 
-            <!-- Контакты -->
             <section id="contacts-sec">
                 <h2>Контакты и Линки</h2>
                 <div class="contacts-grid">
                     <div class="contact-group">
                         <h3>Ответственные за сбор</h3>
-                        <div class="contact-line"><strong>Aлкоматъ:</strong> Лена</div>
+                        <div class="contact-line"><strong>Алкоматъ:</strong> Лена</div>
                         <div class="contact-line"><strong>Главный по логистике:</strong> Артемий</div>
                     </div>
                     <div class="contact-group">
@@ -469,7 +604,6 @@
                 </div>
             </section>
 
-            <!-- Дни рождения -->
             <section id="bdays-sec">
                 <h2>Дни Рождения</h2>
                 <h3 style="font-size: 1.1rem; color: var(--accent); margin: 15px 0 5px 0;">Сентябрь</h3>
@@ -483,40 +617,95 @@
                     <li class="birthday-item">🎉 18.10 — Светлана</li>
                 </ul>
             </section>
+
+            <div id="admin-panel" class="admin-panel hidden">
+                <h3>Админ-панель</h3>
+                <div class="admin-grid">
+                    <div>
+                        <label>Название события</label>
+                        <input type="text" id="admin-event-title" placeholder="Например: Пятничный сбор">
+
+                        <label>Дата</label>
+                        <input type="date" id="admin-event-date">
+
+                        <label>Время</label>
+                        <input type="time" id="admin-event-time">
+                    </div>
+                    <div>
+                        <label>Место</label>
+                        <input type="text" id="admin-event-location" placeholder="Где будет событие">
+
+                        <label>Описание</label>
+                        <textarea id="admin-event-description" placeholder="Описание события"></textarea>
+
+                        <label>Лимит участников</label>
+                        <input type="number" id="admin-event-limit" value="30" min="1">
+                    </div>
+                </div>
+
+                <div class="admin-actions">
+                    <button type="button" onclick="addEventFromAdminForm()">Добавить событие</button>
+                    <button type="button" class="ghost-btn" onclick="downloadEventsFile()">Скачать events.json</button>
+                    <button type="button" class="ghost-btn" onclick="document.getElementById('import-events-file').click()">Загрузить JSON</button>
+                </div>
+                <input id="import-events-file" type="file" accept="application/json" class="hidden" onchange="importEventsFile(this)">
+            </div>
         </div>
     </div>
 
     <script>
         let countdownInterval;
         let targetDateString = "";
+        const EVENTS_STORAGE_KEY = 'buhlo_events_data';
+        const REGISTRATION_STORAGE_KEY = 'buhlo_registrations';
+        const DEFAULT_EVENTS = [
+            {
+                id: 1,
+                title: 'Пятничный сбор',
+                date: '2026-10-03',
+                time: '19:00',
+                location: 'Наше стандартное место / беседки',
+                description: 'Еженедельный сбор компании для хорошего настроения',
+                participants: [],
+                maxParticipants: 50
+            },
+            {
+                id: 2,
+                title: 'Глобальный выезд на Нёман',
+                date: '2026-07-17',
+                time: '09:00',
+                location: 'р. Неман',
+                description: 'Ежегодный эпический выезд: лодки, палатки, казаны, хорошее настроение',
+                participants: [],
+                maxParticipants: 30
+            }
+        ];
+        let appEvents = [];
 
-        // Аутентификация
         function checkAuth() {
             const val = document.getElementById('auth-input').value.trim().toLowerCase();
             if (val === 'лена') {
                 document.getElementById('auth-overlay').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
                 localStorage.setItem('buhlo_auth', 'true');
+                localStorage.setItem('buhlo_admin', 'true');
                 initPage();
             } else {
                 document.getElementById('auth-error').style.display = 'block';
             }
         }
 
-        // Авто-вход если уже вводили
         window.onload = function() {
             if (localStorage.getItem('buhlo_auth') === 'true') {
                 document.getElementById('auth-overlay').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
-                initPage();
             }
-            // Установка минимальной даты для инпута (сегодня)
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('destination-date').min = today;
+            initPage();
         };
 
         function initPage() {
-            // Получаем сохраненную дату или ставим по умолчанию 17 июля
             let savedDate = localStorage.getItem('buhlo_target_date');
             if (!savedDate) {
                 const now = new Date();
@@ -527,16 +716,26 @@
                 }
                 savedDate = defaultTarget.toISOString().split('T')[0];
             }
-            
+
             document.getElementById('destination-date').value = savedDate;
             targetDateString = savedDate + 'T00:00:00';
-            
+
             startTimer();
             calculateAlcohol();
+            loadEvents();
+            toggleAdminPanel();
+        }
+
+        function toggleAdminPanel() {
+            const adminPanel = document.getElementById('admin-panel');
+            const isAdmin = localStorage.getItem('buhlo_admin') === 'true';
+            if ( adminPanel ) {
+                adminPanel.classList.toggle('hidden', !isAdmin);
+            }
         }
 
         function updateCustomDate(val) {
-            if(!val) return;
+            if (!val) return;
             localStorage.setItem('buhlo_target_date', val);
             targetDateString = val + 'T00:00:00';
             startTimer();
@@ -544,7 +743,7 @@
 
         function startTimer() {
             if (countdownInterval) clearInterval(countdownInterval);
-            
+
             function tick() {
                 const target = new Date(targetDateString).getTime();
                 const now = new Date().getTime();
@@ -574,14 +773,13 @@
             countdownInterval = setInterval(tick, 1000);
         }
 
-        // Алкогольный калькулятор
         function calculateAlcohol() {
             const people = parseInt(document.getElementById('calc-people').value) || 0;
             const days = parseInt(document.getElementById('calc-days').value) || 0;
             const intensity = document.getElementById('calc-intensity').value;
 
-            let coeffHard = 0.25;  // литры на человека в день
-            let coeffLight = 0.35; 
+            let coeffHard = 0.25;
+            let coeffLight = 0.35;
             let coeffBeer = 0.7;
             let coeffWater = 1.5;
 
@@ -602,6 +800,221 @@
             document.getElementById('res-beer').innerText = totalBeer + ' л';
             document.getElementById('res-water').innerText = totalWater + ' л';
             document.getElementById('res-coal').innerText = totalCoal + ' шт';
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Дата не указана';
+            const date = new Date(dateString + 'T12:00:00');
+            if (Number.isNaN(date.getTime())) return dateString;
+            return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function getSavedEvents() {
+            const raw = localStorage.getItem(EVENTS_STORAGE_KEY);
+            if (!raw) {
+                localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(DEFAULT_EVENTS));
+                return DEFAULT_EVENTS;
+            }
+
+            try {
+                const parsed = JSON.parse(raw);
+                return Array.isArray(parsed) ? parsed : parsed.events || DEFAULT_EVENTS;
+            } catch (error) {
+                return DEFAULT_EVENTS;
+            }
+        }
+
+        async function loadEvents() {
+            const eventsFromLocal = getSavedEvents();
+            appEvents = eventsFromLocal;
+
+            try {
+                const response = await fetch('events.json');
+                if (response.ok) {
+                    const json = await response.json();
+                    if (json && Array.isArray(json.events)) {
+                        appEvents = json.events;
+                        localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(appEvents));
+                    }
+                }
+            } catch (error) {
+                console.log('События не подгрузились из events.json, используем локальные данные');
+            }
+
+            renderEvents();
+        }
+
+        function renderEvents() {
+            const eventsList = document.getElementById('events-list');
+            if (!eventsList) return;
+
+            if (!appEvents.length) {
+                eventsList.innerHTML = '<p>События пока не добавлены.</p>';
+                return;
+            }
+
+            eventsList.innerHTML = appEvents.map((event) => {
+                const participants = Array.isArray(event.participants) ? event.participants : [];
+                const registered = hasUserRegistered(event.id);
+                return `
+                    <article class="event-card" data-id="${event.id}">
+                        <div class="event-header">
+                            <div>
+                                <span class="event-date">${formatDate(event.date)}</span>
+                                <h3>${event.title}</h3>
+                            </div>
+                            <span class="event-badge">${participants.length}/${event.maxParticipants || 50}</span>
+                        </div>
+                        <p>${event.description || 'Описание события скоро появится.'}</p>
+                        <div class="event-meta">
+                            <span>🕒 ${event.time || 'Время не указано'}</span>
+                            <span>📍 ${event.location || 'Место не указано'}</span>
+                        </div>
+                        <div class="event-actions">
+                            <button type="button" class="secondary-btn" onclick="showRegistrationForm(${event.id})">Записаться</button>
+                            ${localStorage.getItem('buhlo_admin') === 'true' ? '<button type="button" class="ghost-btn" onclick="removeEvent(' + event.id + ')">Удалить</button>' : ''}
+                        </div>
+                        ${registered ? '<div class="registered-badge">Вы уже записаны</div>' : ''}
+                        <div class="registration-form hidden" id="form-${event.id}">
+                            <input type="text" id="reg-name-${event.id}" placeholder="Ваше имя*">
+                            <input type="text" id="reg-contact-${event.id}" placeholder="Telegram / телефон">
+                            <textarea id="reg-notes-${event.id}" placeholder="Комментарий"></textarea>
+                            <button type="button" onclick="submitRegistration(${event.id})">Подтвердить запись</button>
+                        </div>
+                        <div class="participants-list">
+                            ${participants.map((person) => `<span class="participant-pill">${person.name}</span>`).join('') || '<span class="participant-pill">Пока никого</span>'}
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function showRegistrationForm(eventId) {
+            const form = document.getElementById(`form-${eventId}`);
+            if (!form) return;
+            form.classList.toggle('hidden');
+        }
+
+        function hasUserRegistered(eventId) {
+            const registrations = JSON.parse(localStorage.getItem(REGISTRATION_STORAGE_KEY) || '{}');
+            return !!(registrations[eventId]);
+        }
+
+        function submitRegistration(eventId) {
+            const name = document.getElementById(`reg-name-${eventId}`)?.value.trim();
+            const contact = document.getElementById(`reg-contact-${eventId}`)?.value.trim();
+            const notes = document.getElementById(`reg-notes-${eventId}`)?.value.trim();
+
+            if (!name) {
+                alert('Введите имя для записи');
+                return;
+            }
+
+            const event = appEvents.find(item => item.id === eventId);
+            if (!event) return;
+
+            event.participants = Array.isArray(event.participants) ? event.participants : [];
+            const maxParticipants = Number(event.maxParticipants) || 50;
+
+            if (event.participants.length >= maxParticipants) {
+                alert('Мест уже нет, но можно оставить заявку в списке ожидания');
+                return;
+            }
+
+            const entry = {
+                name,
+                contact: contact || 'не указан',
+                notes: notes || '',
+                registeredAt: new Date().toISOString()
+            };
+
+            event.participants.push(entry);
+
+            const registrations = JSON.parse(localStorage.getItem(REGISTRATION_STORAGE_KEY) || '{}');
+            registrations[eventId] = entry;
+            localStorage.setItem(REGISTRATION_STORAGE_KEY, JSON.stringify(registrations));
+            localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(appEvents));
+
+            renderEvents();
+        }
+
+        function removeEvent(eventId) {
+            if (!confirm('Удалить событие?')) return;
+            appEvents = appEvents.filter(item => item.id !== eventId);
+            localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(appEvents));
+            renderEvents();
+        }
+
+        function addEventFromAdminForm() {
+            const title = document.getElementById('admin-event-title').value.trim();
+            const date = document.getElementById('admin-event-date').value;
+            const time = document.getElementById('admin-event-time').value;
+            const location = document.getElementById('admin-event-location').value.trim();
+            const description = document.getElementById('admin-event-description').value.trim();
+            const limit = Number(document.getElementById('admin-event-limit').value) || 30;
+
+            if (!title || !date) {
+                alert('Заполните название и дату события');
+                return;
+            }
+
+            const newEvent = {
+                id: Date.now(),
+                title,
+                date,
+                time,
+                location: location || 'Место не указано',
+                description: description || 'Описание события скоро появится.',
+                participants: [],
+                maxParticipants: limit
+            };
+
+            appEvents.unshift(newEvent);
+            localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(appEvents));
+            renderEvents();
+            document.getElementById('admin-event-title').value = '';
+            document.getElementById('admin-event-date').value = '';
+            document.getElementById('admin-event-time').value = '';
+            document.getElementById('admin-event-location').value = '';
+            document.getElementById('admin-event-description').value = '';
+            document.getElementById('admin-event-limit').value = 30;
+        }
+
+        function downloadEventsFile() {
+            const data = JSON.stringify({ events: appEvents }, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'events.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importEventsFile(input) {
+            const file = input.files && input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                try {
+                    const parsed = JSON.parse(event.target.result);
+                    const eventList = Array.isArray(parsed) ? parsed : parsed.events;
+                    if (!Array.isArray(eventList)) {
+                        throw new Error('Некорректный формат JSON');
+                    }
+                    appEvents = eventList;
+                    localStorage.setItem(EVENTS_STORAGE_KEY, JSON.stringify(appEvents));
+                    renderEvents();
+                    alert('События успешно загружены');
+                } catch (error) {
+                    alert('Ошибка импорта JSON: ' + error.message);
+                }
+                input.value = '';
+            };
+            reader.readAsText(file);
         }
     </script>
 </body>
