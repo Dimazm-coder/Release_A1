@@ -1,4 +1,4 @@
-const DEFAULT_ADMIN_PASSWORD = 'лена';
+const DEFAULT_ADMIN_PASSWORD = 'Terminator1981';
 const ADMIN_KEY = 'buhlo_admin_password';
 const ADMIN_SESSION_KEY = 'buhlo_admin_logged_in';
 const EVENTS_KEY = 'buhlo_events_data';
