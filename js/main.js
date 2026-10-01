@@ -73,9 +73,9 @@ function initPage() {
     if (!savedDate) {
         const now = new Date();
         let currentYear = now.getFullYear();
-        let defaultTarget = new Date(`07-17-${currentYear}T00:00:00`);
+        let defaultTarget = new Date(`${currentYear}-07-17T00:00:00`);
         if (now > defaultTarget) {
-            defaultTarget = new Date(`07-17-${currentYear}T00:00:00`);
+            defaultTarget = new Date(`${currentYear}-07-17T00:00:00`);
         }
         savedDate = defaultTarget.toISOString().split('T')[0];
     }
