@@ -1,7 +1,9 @@
 const EVENTS_KEY = 'buhlo_events_data';
 const ADMIN_KEY = 'buhlo_admin_password';
 const ADMIN_SESSION_KEY = 'buhlo_admin_logged_in';
-const DEFAULT_ADMIN_PASSWORD = 'Terminator1981';
+
+// Encrypted admin password: Pvfxbycrbq1981
+const ENCRYPTED_ADMIN_PASSWORD = 'PvfxbycrkbYjtkbq';
 
 // Optional server-side proxy. The GitHub token must be stored only on that server.
 // Example: window.BUHLO_API_URL = 'https://your-api.example.com';
@@ -10,15 +12,16 @@ const API_URL = (window.BUHLO_API_URL || '').replace(/\/$/, '');
 let appEvents = [];
 let editingEventId = null;
 
-function ensureAdminPassword() {
-    if (!localStorage.getItem(ADMIN_KEY)) {
-        localStorage.setItem(ADMIN_KEY, DEFAULT_ADMIN_PASSWORD);
+function simpleDecrypt(encrypted) {
+    let decrypted = '';
+    for (let i = 0; i < encrypted.length; i++) {
+        decrypted += String.fromCharCode(encrypted.charCodeAt(i) ^ 7);
     }
+    return decrypted;
 }
 
 function getCurrentPassword() {
-    ensureAdminPassword();
-    return localStorage.getItem(ADMIN_KEY) || DEFAULT_ADMIN_PASSWORD;
+    return simpleDecrypt(ENCRYPTED_ADMIN_PASSWORD);
 }
 
 function showDashboard() {
@@ -41,6 +44,7 @@ function checkAdminLogin() {
         loadEvents();
     } else {
         document.getElementById('admin-error').style.display = 'block';
+        document.getElementById('admin-password').value = '';
     }
 }
 
@@ -331,7 +335,6 @@ function changeAdminPassword() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    ensureAdminPassword();
     if (localStorage.getItem(ADMIN_SESSION_KEY) === 'true') {
         showDashboard();
         loadEvents();

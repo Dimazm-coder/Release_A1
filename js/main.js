@@ -1,8 +1,11 @@
-const DEFAULT_ADMIN_PASSWORD = 'Terminator1981';
+const HUB_ANSWER = 'лена';
 const ADMIN_KEY = 'buhlo_admin_password';
 const ADMIN_SESSION_KEY = 'buhlo_admin_logged_in';
 const EVENTS_KEY = 'buhlo_events_data';
 const REGISTRATIONS_KEY = 'buhlo_registrations';
+
+// Encrypted admin password: Pvfxbycrbq1981 (you can hash this server-side)
+const ENCRYPTED_ADMIN_PASSWORD = 'PvfxbycrkbYjtkbq';
 
 const DEFAULT_EVENTS = [
     {
@@ -31,27 +34,28 @@ let appEvents = [];
 let countdownInterval;
 let targetDateString = '';
 
-function ensureAdminPassword() {
-    const stored = localStorage.getItem(ADMIN_KEY);
-    if (!stored) {
-        localStorage.setItem(ADMIN_KEY, DEFAULT_ADMIN_PASSWORD);
+function simpleDecrypt(encrypted) {
+    let decrypted = '';
+    for (let i = 0; i < encrypted.length; i++) {
+        decrypted += String.fromCharCode(encrypted.charCodeAt(i) ^ 7);
     }
+    return decrypted;
 }
 
 function getAdminPassword() {
-    ensureAdminPassword();
-    return localStorage.getItem(ADMIN_KEY) || DEFAULT_ADMIN_PASSWORD;
+    return simpleDecrypt(ENCRYPTED_ADMIN_PASSWORD);
 }
 
 function checkAuth() {
     const val = document.getElementById('auth-input').value.trim().toLowerCase();
-    if (val === getAdminPassword().toLowerCase()) {
+    if (val === HUB_ANSWER.toLowerCase()) {
         localStorage.setItem('buhlo_auth', 'true');
         document.getElementById('auth-overlay').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
         initPage();
     } else {
         document.getElementById('auth-error').style.display = 'block';
+        document.getElementById('auth-input').value = '';
     }
 }
 
@@ -60,7 +64,6 @@ function goToAdmin() {
 }
 
 window.onload = function() {
-    ensureAdminPassword();
     if (localStorage.getItem('buhlo_auth') === 'true') {
         document.getElementById('auth-overlay').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
