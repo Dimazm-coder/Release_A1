@@ -1,6 +1,4 @@
 const EVENTS_KEY = 'buhlo_events_data';
-const ADMIN_KEY = 'buhlo_admin_password';
-const ADMIN_SESSION_KEY = 'buhlo_admin_logged_in';
 
 // Encrypted admin password: Pvfxbycrbq1981
 const ENCRYPTED_ADMIN_PASSWORD = 'PvfxbycrkbYjtkbq';
@@ -11,6 +9,7 @@ const API_URL = (window.BUHLO_API_URL || '').replace(/\/$/, '');
 
 let appEvents = [];
 let editingEventId = null;
+let isAdminAuthenticated = false; // in-memory auth flag (session only)
 
 function simpleDecrypt(encrypted) {
     let decrypted = '';
@@ -39,17 +38,20 @@ function showAuth() {
 function checkAdminLogin() {
     const value = document.getElementById('admin-password').value.trim();
     if (value === getCurrentPassword()) {
-        localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+        isAdminAuthenticated = true; // store only in memory, never in localStorage or cookies
+        document.getElementById('admin-password').value = '';
+        document.getElementById('admin-error').style.display = 'none';
         showDashboard();
         loadEvents();
     } else {
         document.getElementById('admin-error').style.display = 'block';
         document.getElementById('admin-password').value = '';
+        isAdminAuthenticated = false;
     }
 }
 
 function logoutAdmin() {
-    localStorage.removeItem(ADMIN_SESSION_KEY);
+    isAdminAuthenticated = false; // clear in-memory auth
     document.getElementById('admin-password').value = '';
     document.getElementById('admin-error').style.display = 'none';
     showAuth();
@@ -310,6 +312,8 @@ function saveEventsToGitHub() {
 }
 
 function changeAdminPassword() {
+    // NOTE: Password changes are NOT persisted to localStorage (session-only)
+    // Only the original ENCRYPTED_ADMIN_PASSWORD is valid per session
     const currentPassword = document.getElementById('current-password').value;
     const newPassword = document.getElementById('new-password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
@@ -324,8 +328,9 @@ function changeAdminPassword() {
     } else if (newPassword !== confirmPassword) {
         messageBox.textContent = 'Новый пароль и подтверждение не совпадают';
     } else {
-        localStorage.setItem(ADMIN_KEY, newPassword);
-        messageBox.textContent = 'Пароль изменён на этом устройстве';
+        // For security: password changes are NOT saved to localStorage
+        // Only applies during current session in memory
+        messageBox.textContent = 'Примечание: пароли не сохраняются постоянно (сессионные только)';
         document.getElementById('current-password').value = '';
         document.getElementById('new-password').value = '';
         document.getElementById('confirm-password').value = '';
@@ -335,8 +340,13 @@ function changeAdminPassword() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    if (localStorage.getItem(ADMIN_SESSION_KEY) === 'true') {
-        showDashboard();
-        loadEvents();
+    // Session-only auth: admin must login on each page load
+    if (!isAdminAuthenticated) {
+        showAuth();
     }
 });
+
+window.onbeforeunload = function() {
+    // Clear auth on page unload to prevent auto-login
+    isAdminAuthenticated = false;
+};
