@@ -1,21 +1,12 @@
 const HUB_ANSWER = 'лена';
 const EVENTS_KEY = 'buhlo_events_data';
+const BIRTHDAYS_KEY = 'buhlo_birthdays_data';
 const REGISTRATIONS_KEY = 'buhlo_registrations';
 
 // Encrypted admin password: Pvfxbycrbq1981
-const ENCRYPTED_ADMIN_PASSWORD = 'PvfxbycrkbYjtkbq';
+const ENCRYPTED_ADMIN_PASSWORD = 'Oy_hy}hyq|tj\u0003';
 
 const DEFAULT_EVENTS = [
-    {
-        id: 1,
-        title: 'Пятничный сбор',
-        date: '2026-10-03',
-        time: '19:00',
-        location: 'Наше стандартное место / беседки',
-        description: 'Еженедельный сбор компании для хорошего настроения',
-        participants: [],
-        maxParticipants: 50
-    },
     {
         id: 2,
         title: 'Глобальный выезд на Нёман',
@@ -32,6 +23,7 @@ let appEvents = [];
 let countdownInterval;
 let targetDateString = '';
 let isAuthenticated = false; // in-memory auth flag (session only)
+let appBirthdays = [];
 
 function simpleDecrypt(encrypted) {
     let decrypted = '';
@@ -39,10 +31,6 @@ function simpleDecrypt(encrypted) {
         decrypted += String.fromCharCode(encrypted.charCodeAt(i) ^ 7);
     }
     return decrypted;
-}
-
-function getAdminPassword() {
-    return simpleDecrypt(ENCRYPTED_ADMIN_PASSWORD);
 }
 
 function checkAuth() {
@@ -101,6 +89,7 @@ function initPage() {
     startTimer();
     calculateAlcohol();
     loadEvents();
+    loadBirthdays();
 }
 
 function updateCustomDate(val) {
@@ -203,6 +192,64 @@ async function loadEvents() {
     }
 
     renderEvents();
+}
+
+function loadBirthdays() {
+    try {
+        const response = fetch('data/birthdays.json')
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (data && Array.isArray(data.birthdays)) {
+                    appBirthdays = data.birthdays;
+                    localStorage.setItem(BIRTHDAYS_KEY, JSON.stringify(appBirthdays));
+                } else {
+                    const saved = localStorage.getItem(BIRTHDAYS_KEY);
+                    appBirthdays = saved ? JSON.parse(saved) : [];
+                }
+                renderBirthdays();
+            })
+            .catch(() => {
+                const saved = localStorage.getItem(BIRTHDAYS_KEY);
+                appBirthdays = saved ? JSON.parse(saved) : [];
+                renderBirthdays();
+            });
+    } catch (error) {
+        const saved = localStorage.getItem(BIRTHDAYS_KEY);
+        appBirthdays = saved ? JSON.parse(saved) : [];
+        renderBirthdays();
+    }
+}
+
+function renderBirthdays() {
+    const bdaysSection = document.getElementById('bdays-sec');
+    if (!bdaysSection) return;
+
+    if (!appBirthdays.length) {
+        bdaysSection.innerHTML = '<h2>Дни Рождения</h2><p>Дни рождения не добавлены.</p>';
+        return;
+    }
+
+    // Group by month
+    const months = {};
+    appBirthdays.forEach(bd => {
+        const date = new Date(bd.date + 'T00:00:00');
+        const monthName = date.toLocaleDateString('ru-RU', { month: 'long' });
+        if (!months[monthName]) months[monthName] = [];
+        months[monthName].push(bd);
+    });
+
+    let html = '<h2>Дни Рождения</h2>';
+    Object.keys(months).forEach(monthName => {
+        html += `<h3>${monthName.charAt(0).toUpperCase() + monthName.slice(1)}</h3><ul class="birthday-list">`;
+        months[monthName].forEach(bd => {
+            const date = new Date(bd.date + 'T00:00:00');
+            const dayMonth = date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+            html += `<li class="birthday-item">🎉 ${dayMonth} — ${bd.name}</li>`;
+        });
+        html += '</ul>';
+    });
+
+    bdaysSection.innerHTML = html;
 }
 
 function formatDate(dateString) {
