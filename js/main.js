@@ -1,10 +1,8 @@
 const HUB_ANSWER = 'лена';
-const ADMIN_KEY = 'buhlo_admin_password';
-const ADMIN_SESSION_KEY = 'buhlo_admin_logged_in';
 const EVENTS_KEY = 'buhlo_events_data';
 const REGISTRATIONS_KEY = 'buhlo_registrations';
 
-// Encrypted admin password: Pvfxbycrbq1981 (you can hash this server-side)
+// Encrypted admin password: Pvfxbycrbq1981
 const ENCRYPTED_ADMIN_PASSWORD = 'PvfxbycrkbYjtkbq';
 
 const DEFAULT_EVENTS = [
@@ -33,6 +31,7 @@ const DEFAULT_EVENTS = [
 let appEvents = [];
 let countdownInterval;
 let targetDateString = '';
+let isAuthenticated = false; // in-memory auth flag (session only)
 
 function simpleDecrypt(encrypted) {
     let decrypted = '';
@@ -49,9 +48,10 @@ function getAdminPassword() {
 function checkAuth() {
     const val = document.getElementById('auth-input').value.trim().toLowerCase();
     if (val === HUB_ANSWER.toLowerCase()) {
-        localStorage.setItem('buhlo_auth', 'true');
+        isAuthenticated = true; // store only in memory, not in cookies or localStorage
         document.getElementById('auth-overlay').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
+        document.getElementById('auth-input').value = '';
         initPage();
     } else {
         document.getElementById('auth-error').style.display = 'block';
@@ -64,14 +64,20 @@ function goToAdmin() {
 }
 
 window.onload = function() {
-    if (localStorage.getItem('buhlo_auth') === 'true') {
-        document.getElementById('auth-overlay').style.display = 'none';
-        document.getElementById('main-content').style.display = 'block';
+    // Session-only authentication: if user closes/refreshes, they need to re-auth
+    if (!isAuthenticated) {
+        document.getElementById('auth-overlay').style.display = 'flex';
+        document.getElementById('main-content').style.display = 'none';
     }
     const today = new Date().toISOString().split('T')[0];
     const destinationDateInput = document.getElementById('destination-date');
     if (destinationDateInput) destinationDateInput.min = today;
     initPage();
+};
+
+window.onbeforeunload = function() {
+    // Clear auth on page unload to prevent auto-login
+    isAuthenticated = false;
 };
 
 function initPage() {
