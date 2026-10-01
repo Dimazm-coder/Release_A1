@@ -1,7 +1,7 @@
 const EVENTS_KEY = 'buhlo_events_data';
 
 // Encrypted admin password: Pvfxbycrbq1981
-const ENCRYPTED_ADMIN_PASSWORD = 'PvfxbycrkbYjtkbq';
+const ENCRYPTED_ADMIN_PASSWORD = 'Wsg}g|hzixh\u0001\u0004\u0003\u0005';
 
 // Optional server-side proxy. The GitHub token must be stored only on that server.
 // Example: window.BUHLO_API_URL = 'https://your-api.example.com';
